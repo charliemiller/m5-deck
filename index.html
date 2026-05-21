@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M5 Advisors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0A0A0A;
+  --white:  #FFFFFF;
+  --mist:   #F4F2EE;
+  --slate:  #6B6B65;
+  --rule:   #D8D5CF;
+  --steel:  #1C3548;
+  --amber:  #B8935A;
+  --amber-dim: rgba(184,147,90,0.12);
+  --border: rgba(216,213,207,0.12);
+  --font:   'IBM Plex Sans', sans-serif;
+  --mono:   'IBM Plex Mono', monospace;
+  --tb:     64px;
+  --px:     80px; /* horizontal padding for text slides */
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%; overflow: hidden;
+  background: var(--ink); color: var(--white);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── TOOLBAR ── */
+#toolbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--tb); z-index: 200;
+  background: rgba(10,10,10,0.97);
+  border-bottom: 0.5px solid var(--border);
+  backdrop-filter: blur(16px);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--px);
+}
+.tb-brand { display: flex; align-items: center; gap: 14px; }
+.tb-logo  { width: 34px; height: 34px; object-fit: contain; }
+.tb-name  { font-size: 13px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.tb-section {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.tb-nav { display: flex; align-items: center; gap: 16px; }
+.tb-counter { font-family: var(--mono); font-size: 13px; color: rgba(255,255,255,0.28); letter-spacing: 0.06em; min-width: 50px; text-align: center; }
+.tb-btn {
+  width: 34px; height: 34px; border: 0.5px solid var(--border);
+  background: transparent; cursor: pointer; color: rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.tb-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+.tb-btn:active:not(:disabled) { background: rgba(184,147,90,0.2); }
+.tb-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+.tb-btn:focus-visible { outline: 1px solid var(--amber); outline-offset: 2px; }
+
+/* ── STAGE ── */
+#stage { position: fixed; top: var(--tb); left: 0; right: 0; bottom: 0; overflow: hidden; }
+.slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; overflow: hidden; }
+.slide.is-active { opacity: 1; pointer-events: all; }
+
+/* ── DOTS ── */
+#dots { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; z-index: 200; }
+.dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.dot::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  transition: background 0.3s, transform 0.3s;
+}
+.dot.is-active::before { background: var(--amber); transform: scale(1.4); }
+.dot:hover:not(.is-active)::before { background: rgba(255,255,255,0.5); }
+
+/* ── SHARED ELEMENTS ── */
+.eyebrow {
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--amber); display: flex; align-items: center; gap: 14px;
+}
+.eyebrow::after { content: ''; width: 28px; height: 0.5px; background: var(--amber); opacity: 0.5; }
+.amber-rule { width: 48px; height: 1px; background: var(--amber); }
+
+/* ── SLIDE 1: COVER ── */
+#s-cover { background: var(--ink); }
+.cover-bg {
+  position: absolute; inset: 0;
+  background-image: url('brand_assets/hero-cover.jpg');
+  background-size: cover; background-position: center 40%;
+}
+.cover-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(170deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.55) 45%, rgba(10,10,10,0.92) 100%);
+}
+.cover-body {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 0 var(--px) 72px;
+  z-index: 1;
+}
+.cover-kicker { font-size: 15px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: var(--amber); margin-bottom: 28px; }
+.cover-headline {
+  font-size: clamp(80px, 9.5vw, 130px); font-weight: 300;
+  line-height: 1.04; letter-spacing: -0.03em;
+  margin-bottom: 36px; max-width: 1100px;
+}
+.cover-headline strong { font-weight: 600; }
+.cover-sub {
+  font-size: 22px; font-weight: 400;
+  color: rgba(255,255,255,0.88); line-height: 1.75; max-width: 600px;
+}
+
+/* ── SLIDE 2: ABOUT ── */
+#s-about {
+  background: var(--ink);
+  display: grid; grid-template-columns: 44fr 56fr; overflow: hidden;
+}
+.about-left {
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 52px var(--px);
+  border-right: 0.5px solid var(--border);
+}
+.about-eyebrow { margin-bottom: 28px; }
+.about-display {
+  font-size: clamp(52px, 5.5vw, 80px); font-weight: 300;
+  line-height: 1.06; letter-spacing: -0.028em;
+}
+.about-display strong { font-weight: 600; }
+.principles { border-top: 0.5px solid var(--border); }
+.principle {
+  display: flex; gap: 20px; align-items: flex-start;
+  padding: 20px 0; border-bottom: 0.5px solid var(--border);
+}
+.p-num { font-family: var(--mono); font-size: 12px; color: var(--amber); letter-spacing: 0.1em; flex-shrink: 0; padding-top: 4px; }
+.p-text { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; }
+.p-text strong { color: var(--white); font-weight: 500; }
+.about-right {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 64px 72px;
+  background: rgba(255,255,255,0.015);
+}
+.about-amber-rule { width: 48px; height: 1px; background: var(--amber); margin-bottom: 44px; opacity: 0.6; }
+.about-lead {
+  font-size: clamp(30px, 3.2vw, 46px); font-weight: 300;
+  line-height: 1.45; letter-spacing: -0.018em;
+  color: rgba(255,255,255,0.92); margin-bottom: 36px;
+}
+.about-lead em { font-style: normal; color: var(--amber); }
+.about-body {
+  font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.38); line-height: 1.75;
+  border-top: 0.5px solid var(--border); padding-top: 28px;
+}
+
+/* ── SLIDE 3: SERVICES ── */
+#s-services { background: var(--ink); display: flex; flex-direction: column; }
+.svc-head { padding: 24px var(--px) 12px; flex-shrink: 0; }
+.svc-display { font-size: clamp(56px, 6vw, 88px); font-weight: 300; line-height: 1.0; letter-spacing: -0.025em; margin-top: 10px; }
+.svc-display strong { font-weight: 600; }
+.svc-grid {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr; gap: 2px;
+  padding: 0 var(--px) 16px;
+}
+.svc-card {
+  background: rgba(255,255,255,0.022); border: 0.5px solid var(--border);
+  padding: 28px 40px;
+  position: relative; overflow: hidden;
+  transition: background 0.3s; height: 100%;
+}
+.svc-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--amber); opacity: 0; transition: opacity 0.3s; }
+.svc-card:hover { background: rgba(184,147,90,0.04); }
+.svc-card:hover::before { opacity: 1; }
+.svc-num { font-family: var(--mono); font-size: 15px; color: var(--amber); letter-spacing: 0.12em; margin-bottom: 16px; }
+.svc-name { font-size: 30px; font-weight: 400; letter-spacing: -0.012em; line-height: 1.2; margin-bottom: 12px; }
+.svc-rule { width: 28px; height: 0.5px; background: var(--amber); margin-bottom: 14px; }
+.svc-desc { font-size: 19px; font-weight: 300; color: rgba(255,255,255,0.5); line-height: 1.8; }
+
+/* ── SLIDE 4: FRAMEWORK ── */
+#s-framework { background: var(--ink); display: flex; flex-direction: column; overflow: hidden; }
+.fw-head {
+  flex-shrink: 0;
+  padding: 36px var(--px) 28px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: flex-end; gap: 64px;
+}
+.fw-head-left { flex: 1; }
+.fw-head-eyebrow { margin-bottom: 16px; }
+.fw-title { font-size: clamp(36px, 3.8vw, 54px); font-weight: 300; line-height: 1.08; letter-spacing: -0.025em; }
+.fw-title strong { font-weight: 600; }
+.fw-head-sub { flex: 0 0 420px; font-size: 17px; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.65; padding-bottom: 4px; }
+.fw-cols {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.fw-col {
+  padding: 32px 40px;
+  border-right: 0.5px solid var(--border);
+  display: flex; flex-direction: column;
+}
+.fw-col:first-child { padding-left: var(--px); }
+.fw-col:last-child { border-right: none; padding-right: var(--px); }
+.fw-col-icon { margin-bottom: 20px; color: var(--amber); opacity: 0.8; }
+.fw-col-head { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 6px; }
+.fw-col-rule { width: 24px; height: 1px; background: var(--amber); margin: 16px 0; opacity: 0.6; }
+.fw-col-items { display: flex; flex-direction: column; gap: 0; }
+.fw-col-item {
+  font-size: 16px; font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.5;
+  padding: 12px 0; border-bottom: 0.5px solid var(--border);
+}
+.fw-col-item:last-child { border-bottom: none; }
+
+/* ── WORK SLIDES ── */
+.work-slide { display: grid; grid-template-columns: 58fr 42fr; }
+.wp-img { position: relative; overflow: hidden; }
+.wp-img img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  filter: grayscale(20%);
+  transition: filter 0.6s ease;
+}
+.wp-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 60%, rgba(10,10,10,0.3) 100%);
+}
+.wp-panel {
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 52px 64px 52px 56px;
+  background: var(--ink);
+  border-left: 0.5px solid var(--border);
+  overflow: hidden;
+}
+.wp-header { flex-shrink: 0; }
+.wp-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 32px 0; }
+.wp-location {
+  font-family: var(--mono); font-size: 15px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35); margin-bottom: 18px;
+}
+.wp-name {
+  font-size: clamp(48px, 5.2vw, 72px); font-weight: 300;
+  letter-spacing: -0.025em; line-height: 1.08;
+  margin-bottom: 28px;
+}
+.wp-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 0; }
+.wp-tag {
+  font-size: 13px; font-family: var(--mono);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--amber);
+  border: 0.5px solid rgba(184,147,90,0.35);
+  padding: 6px 14px;
+}
+.wp-footer { flex-shrink: 0; }
+.wp-rule { width: 36px; height: 0.5px; background: var(--border); margin-bottom: 24px; }
+.wp-desc { font-size: 20px; font-weight: 300; color: rgba(255,255,255,0.55); line-height: 1.78; }
+
+/* ── SLIDE 11: LEADERSHIP ── */
+#s-leadership { display: grid; grid-template-columns: 38fr 62fr; }
+.ls-photo { position: relative; overflow: hidden; }
+.ls-photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top center;
+  filter: grayscale(15%);
+}
+.ls-photo::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 50%, rgba(10,10,10,0.25) 100%);
+}
+.ls-panel {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ink);
+  border-left: 0.5px solid var(--border);
+  overflow: hidden;
+}
+.ls-wrap { padding: 40px var(--px) 40px 72px; width: 100%; }
+.ls-eyebrow { margin-bottom: 20px; }
+.ls-name { font-size: clamp(48px, 4.5vw, 68px); font-weight: 300; letter-spacing: -0.022em; margin-bottom: 6px; }
+.ls-role { font-size: 15px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); margin-bottom: 20px; }
+.ls-rule { width: 36px; height: 0.5px; background: var(--border); margin-bottom: 20px; }
+.ls-lead { font-size: 21px; font-weight: 300; color: rgba(255,255,255,0.85); line-height: 1.72; margin-bottom: 16px; }
+.ls-body { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.48); line-height: 1.8; }
+.ls-creds { margin-top: 24px; padding-top: 20px; border-top: 0.5px solid var(--border); display: flex; flex-wrap: wrap; gap: 20px 48px; }
+.ls-cred-org { font-size: 16px; font-weight: 500; color: var(--white); margin-bottom: 3px; }
+.ls-cred-role { font-size: 13px; font-family: var(--mono); color: rgba(255,255,255,0.32); letter-spacing: 0.04em; }
+
+/* ── SLIDE 12: CONTACT ── */
+#s-contact {
+  background: var(--ink); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+#s-contact::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(184,147,90,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(28,53,72,0.15) 0%, transparent 70%);
+}
+.contact-inner {
+  position: relative; z-index: 1;
+  text-align: center; display: flex; flex-direction: column; align-items: center;
+  padding: 64px var(--px);
+}
+.contact-eyebrow { font-size: 15px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: var(--amber); margin-bottom: 32px; }
+.contact-headline {
+  font-size: clamp(72px, 8.5vw, 116px); font-weight: 300;
+  letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 44px;
+}
+.contact-headline strong { font-weight: 600; }
+.contact-email {
+  font-size: 28px; font-weight: 300;
+  color: rgba(255,255,255,0.65); letter-spacing: 0.06em;
+  text-decoration: none; border-bottom: 0.5px solid rgba(184,147,90,0.3);
+  padding-bottom: 6px; transition: color 0.2s, border-color 0.2s;
+}
+.contact-email:hover { color: var(--amber); border-bottom-color: var(--amber); }
+.contact-sub { margin-top: 52px; font-size: 14px; font-family: var(--mono); letter-spacing: 0.1em; color: rgba(255,255,255,0.2); text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<nav id="toolbar">
+  <div class="tb-brand">
+    <img class="tb-logo" src="brand_assets/M5-logo-sm.jpg" alt="M5">
+    <span class="tb-name">M5 Advisors</span>
+  </div>
+  <span class="tb-section" id="tb-section">Cover</span>
+  <div class="tb-nav">
+    <button class="tb-btn" id="btn-prev" disabled aria-label="Previous">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M8 1.5L3.5 6L8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <span class="tb-counter" id="tb-counter">01 / 14</span>
+    <button class="tb-btn" id="btn-next" aria-label="Next">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M4 1.5L8.5 6L4 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- SLIDES -->
+<div id="stage">
+
+  <!-- 01: COVER -->
+  <div class="slide is-active" id="s-cover" data-label="Cover">
+    <div class="cover-bg"></div>
+    <div class="cover-body">
+      <div class="cover-kicker">M5 Advisors &mdash; Capabilities Overview</div>
+      <div class="cover-headline">Where Real Estate<br><strong>Meets Digital</strong><br>Infrastructure.</div>
+      <div class="cover-sub">Owner&rsquo;s representative and infrastructure advisor for large-scale development &mdash; translating fiber, digital media, and connectivity decisions into lasting owner value.</div>
+    </div>
+  </div>
+
+  <!-- 02: ABOUT -->
+  <div class="slide" id="s-about" data-label="About">
+    <div class="about-left">
+      <div>
+        <div class="eyebrow about-eyebrow">01 &mdash; About</div>
+        <div class="about-display">Built for<br><strong>Owner Value.</strong></div>
+      </div>
+      <div class="principles">
+        <div class="principle">
+          <div class="p-num">01</div>
+          <div class="p-text"><strong>Owner-side, always.</strong> We work exclusively for owners and developers &mdash; never for vendors.</div>
+        </div>
+        <div class="principle">
+          <div class="p-num">02</div>
+          <div class="p-text"><strong>Deeply experienced.</strong> Two decades at the intersection of people, technology, and the built environment.</div>
+        </div>
+        <div class="principle">
+          <div class="p-num">03</div>
+          <div class="p-text"><strong>Fluent across disciplines.</strong> Translating between stakeholders &mdash; from fiber to finance to experience design.</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="about-amber-rule"></div>
+      <div class="about-lead">M5 helps real estate leaders integrate technology to enhance experiences, <em>optimize operations,</em> and unlock lasting asset value.</div>
+      <div class="about-body">We serve as owner&rsquo;s representative and infrastructure advisor for large-scale development &mdash; translating fiber, digital media, and connectivity decisions into durable, revenue-generating programs.</div>
+    </div>
+  </div>
+
+  <!-- 03: SERVICES -->
+  <div class="slide" id="s-services" data-label="Services">
+    <div class="svc-head">
+      <div class="eyebrow">02 &mdash; Services</div>
+      <div class="svc-display">Three Practice<br><strong>Areas.</strong></div>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card">
+        <div class="svc-num">01</div>
+        <div class="svc-name">Strategy &amp;<br>Advisory</div>
+        <div class="svc-rule"></div>
+        <div class="svc-desc">Developing the infrastructure vision and commercial strategy for an asset &mdash; identifying the right approach across connectivity, digital media, and smart building programs to create lasting owner value and exceptional experiences for the people who live, work, and shop there.</div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">02</div>
+        <div class="svc-name">Owner&rsquo;s<br>Representation</div>
+        <div class="svc-rule"></div>
+        <div class="svc-desc">Serving as your technical and commercial lead through procurement, negotiation, and delivery &mdash; so owners retain full decision authority over the systems that define their asset, without needing to build that expertise in-house.</div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">03</div>
+        <div class="svc-name">Technology<br>Leadership</div>
+        <div class="svc-rule"></div>
+        <div class="svc-desc">Providing ongoing technology leadership across programs and portfolios &mdash; managing vendors, contracts, and performance so owners stay in control through every phase of the asset lifecycle.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04: FRAMEWORK -->
+  <div class="slide" id="s-framework" data-label="Framework">
+    <div class="fw-head">
+      <div class="fw-head-left">
+        <div class="eyebrow fw-head-eyebrow">03 &mdash; Framework</div>
+        <div class="fw-title">Digital Master Plan Framework<br><strong>Component Examples</strong></div>
+      </div>
+      <div class="fw-head-sub">What experiences are we providing for our shoppers, residents, and tenants?</div>
+    </div>
+    <div class="fw-cols">
+      <div class="fw-col">
+        <div class="fw-col-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M14 20a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+            <path d="M9.5 15.5a6.5 6.5 0 0 1 9 0M5.5 11.5a12 12 0 0 1 17 0M2 7.5a17.5 17.5 0 0 1 24 0"/>
+          </svg>
+        </div>
+        <div class="fw-col-head">Telecom</div>
+        <div class="fw-col-rule"></div>
+        <div class="fw-col-items">
+          <div class="fw-col-item">Fiber Infrastructure Planning</div>
+          <div class="fw-col-item">Indoor &amp; Outdoor Wireless</div>
+          <div class="fw-col-item">Commercial Strategy (BOOM)</div>
+          <div class="fw-col-item">Bulk &amp; Marketing Strategies</div>
+        </div>
+      </div>
+      <div class="fw-col">
+        <div class="fw-col-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="24" height="10" rx="3"/>
+            <circle cx="8" cy="20" r="3"/><circle cx="20" cy="20" r="3"/>
+            <path d="M2 14h3M23 14h3M8 10V7M20 10V7M8 7h12"/>
+          </svg>
+        </div>
+        <div class="fw-col-head">Mobility</div>
+        <div class="fw-col-rule"></div>
+        <div class="fw-col-items">
+          <div class="fw-col-item">Parking Experience</div>
+          <div class="fw-col-item">EV Charging</div>
+          <div class="fw-col-item">Deliveries &amp; Last Mile</div>
+          <div class="fw-col-item">Rideshare Pick-Up &amp; Drop-Off</div>
+        </div>
+      </div>
+      <div class="fw-col">
+        <div class="fw-col-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="14" cy="10" r="3"/>
+            <circle cx="5" cy="18" r="2.5"/><circle cx="23" cy="18" r="2.5"/>
+            <path d="M14 13v3M14 16l-7 3M14 16l7 3"/>
+          </svg>
+        </div>
+        <div class="fw-col-head">Experience &amp; Analytics</div>
+        <div class="fw-col-rule"></div>
+        <div class="fw-col-items">
+          <div class="fw-col-item">Tenant &amp; Visitor Experience</div>
+          <div class="fw-col-item">Intelligent Coordination</div>
+          <div class="fw-col-item">Amenity Integration</div>
+          <div class="fw-col-item">Venue Analytics</div>
+        </div>
+      </div>
+      <div class="fw-col">
+        <div class="fw-col-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="22" height="15" rx="2"/>
+            <path d="M10 20v3M18 20v3M7 23h14"/>
+            <path d="M8 10h5M8 13.5h9"/>
+          </svg>
+        </div>
+        <div class="fw-col-head">Sponsorship &amp; Signage</div>
+        <div class="fw-col-rule"></div>
+        <div class="fw-col-items">
+          <div class="fw-col-item">Digital Signage &amp; Media</div>
+          <div class="fw-col-item">Sponsorship &amp; Content</div>
+          <div class="fw-col-item">Digital Wayfinding</div>
+          <div class="fw-col-item">Events &amp; Activation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05: WORK — Brookfield Properties -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/brookfield.jpg" alt="Brookfield Properties">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">Multiple Markets</div>
+        <div class="wp-name">Brookfield<br>Properties</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Broadband</span>
+          <span class="wp-tag">Owner&rsquo;s Rep</span>
+          <span class="wp-tag">Portfolio</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Embedded advisor for a portfolio-wide broadband program spanning over a dozen master-planned communities, including deal structuring, operator negotiations, and owner&rsquo;s rep oversight across rollout, contracts, and ongoing program management.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05: WORK — CityPlace -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/cityplace.jpg" alt="CityPlace">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">West Palm Beach, FL</div>
+        <div class="wp-name">CityPlace</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Owner&rsquo;s Rep</span>
+          <span class="wp-tag">Media</span>
+          <span class="wp-tag">Wayfinding</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Owner&rsquo;s rep for building a sponsorship business from the ground up, structuring tightly integrated digital assets including wayfinding and revenue-generating media to underpin a durable commercial program.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06: WORK — The Grove -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/the_grove.jpg" alt="The Grove">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">Los Angeles, CA</div>
+        <div class="wp-name">The Grove</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Digital Experience</span>
+          <span class="wp-tag">Advisory</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Advised on a next-generation retail strategy anchored by a payment-enabled loyalty program, connecting customer intelligence, personalization, and transactional engagement across one of the country&rsquo;s highest-grossing retail destinations.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07: WORK — Sidewalk Labs -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/swl.jpg" alt="Sidewalk Labs">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">New York, NY</div>
+        <div class="wp-name">Sidewalk<br>Labs</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Connectivity Strategy</span>
+          <span class="wp-tag">Research</span>
+          <span class="wp-tag">Program Management</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Led a research and commercialization study exploring next-generation digital infrastructure strategies &mdash; open access networks, neutral-host fiber, and SDNs &mdash; for the mixed-use developments of the future.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08: WORK — LAX -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/lax.jpg" alt="Los Angeles International Airport">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">Los Angeles, CA</div>
+        <div class="wp-name">Los Angeles<br>International<br>Airport</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Customer Experience</span>
+          <span class="wp-tag">Wireless</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Customer engagement strategy and wireless infrastructure planning for one of the world&rsquo;s busiest airports, aligning passenger experience objectives with a holistic wireless connectivity approach.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09: WORK — Obama Presidential Center -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/obama_presidential_center.jpg" alt="Obama Presidential Center">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">Chicago, IL</div>
+        <div class="wp-name">Obama<br>Presidential<br>Center</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Civic + Cultural</span>
+          <span class="wp-tag">Wayfinding</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Advised on the development of a site-specific wayfinding engine, designing a navigation system calibrated to the civic scale, interpretive mission, and visitor experience of a landmark cultural institution.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10: WORK — ICD Brookfield Place -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/icd_brookfield_place.jpeg" alt="ICD Brookfield Place">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">Dubai, UAE</div>
+        <div class="wp-name">ICD Brookfield<br>Place</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Assessment</span>
+          <span class="wp-tag">Strategy</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Conducted a comprehensive digital assessment to identify gaps across the tenant and visitor experience, translating findings into a strategic plan to elevate ICD Brookfield Place&rsquo;s position as a world-class destination asset.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11: WORK — Digital Master Plan -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img" style="background:#141414;">
+      <img src="brand_assets/project_images/digital_master_plan.jpg" alt="Digital Master Plan">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">Atlanta, GA</div>
+        <div class="wp-name" style="font-size: clamp(36px, 4.2vw, 60px)">Landmark Urban<br>Redevelopment</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Digital Strategy</span>
+          <span class="wp-tag">Sponsorship</span>
+          <span class="wp-tag">Financial Modeling</span>
+          <span class="wp-tag">Implementation</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Led digital master planning for a landmark multi-acre urban redevelopment &mdash; identifying billboard and sponsorship revenue opportunities, building the financial model for district-scale digital investment, and establishing an implementation roadmap with partnership strategy and approvals.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12: LEADERSHIP -->
+  <div class="slide" id="s-leadership" data-label="Leadership">
+    <div class="ls-photo">
+      <img src="brand_assets/project_images/Charlie_headshot.jpg" alt="Charlie Miller">
+    </div>
+    <div class="ls-panel">
+      <div class="ls-wrap">
+        <div class="eyebrow ls-eyebrow">05 &mdash; Leadership</div>
+        <div class="ls-name">Charlie Miller</div>
+        <div class="ls-role">Founder &amp; Managing Director</div>
+        <div class="ls-rule"></div>
+        <div class="ls-lead">With a background in digital strategy, product development, and user experience, Charlie helps real estate leaders integrate technology to enhance experiences, optimize operations, and maximize asset value.</div>
+        <div class="ls-body">Before founding M5 Advisors, Charlie was VP of Innovation &amp; Digital Experience at Brookfield Asset Management. Prior to that he was Senior Director at Intersection (part of Sidewalk Labs and Alphabet), and a partner at Control Group &mdash; the technology and design consultancy behind projects like the LinkNYC smart city network. For two decades his work has centered on reimagining the interaction between people, technology, and urban spaces.</div>
+        <div class="ls-creds">
+          <div><div class="ls-cred-org">Brookfield Asset Management</div><div class="ls-cred-role">VP, Innovation &amp; Digital Experience</div></div>
+          <div><div class="ls-cred-org">Intersection / Sidewalk Labs</div><div class="ls-cred-role">Senior Director</div></div>
+          <div><div class="ls-cred-org">Control Group</div><div class="ls-cred-role">Partner</div></div>
+          <div><div class="ls-cred-org">Governors Island Foundation</div><div class="ls-cred-role">Board Member</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13: CONTACT -->
+  <div class="slide" id="s-contact" data-label="Contact">
+    <div class="contact-inner">
+      <div class="contact-eyebrow">Get in Touch</div>
+      <div class="contact-headline">Ready to Build<br><strong>Smarter?</strong></div>
+      <div class="amber-rule" style="margin-bottom: 40px;"></div>
+      <a class="contact-email" href="mailto:hello@m5advisors.com">hello@m5advisors.com</a>
+      <div class="contact-sub">M5 Advisors &nbsp;&middot;&nbsp; New York, NY &nbsp;&middot;&nbsp; m5advisors.com</div>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<!-- DOTS (14) -->
+<div id="dots">
+  <div class="dot is-active" data-idx="0"></div>
+  <div class="dot" data-idx="1"></div>
+  <div class="dot" data-idx="2"></div>
+  <div class="dot" data-idx="3"></div>
+  <div class="dot" data-idx="4"></div>
+  <div class="dot" data-idx="5"></div>
+  <div class="dot" data-idx="6"></div>
+  <div class="dot" data-idx="7"></div>
+  <div class="dot" data-idx="8"></div>
+  <div class="dot" data-idx="9"></div>
+  <div class="dot" data-idx="10"></div>
+  <div class="dot" data-idx="11"></div>
+  <div class="dot" data-idx="12"></div>
+  <div class="dot" data-idx="13"></div>
+</div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dots   = Array.from(document.querySelectorAll('.dot'));
+const btnPrev   = document.getElementById('btn-prev');
+const btnNext   = document.getElementById('btn-next');
+const counter   = document.getElementById('tb-counter');
+const sectionEl = document.getElementById('tb-section');
+const total     = slides.length;
+let current     = 0;
+let animating   = false;
+
+function pad(n) { return String(n + 1).padStart(2, '0'); }
+
+function goTo(idx, dir) {
+  if (animating || idx === current || idx < 0 || idx >= total) return;
+  animating = true;
+
+  const from = slides[current];
+  const to   = slides[idx];
+
+  from.style.transition = 'opacity 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1)';
+  from.style.transform  = dir > 0 ? 'translateX(-48px)' : 'translateX(48px)';
+  from.style.opacity    = '0';
+  from.style.pointerEvents = 'none';
+
+  to.style.transition  = 'none';
+  to.style.transform   = dir > 0 ? 'translateX(48px)' : 'translateX(-48px)';
+  to.style.opacity     = '0';
+  to.classList.add('is-active');
+
+  to.getBoundingClientRect();
+
+  to.style.transition  = 'opacity 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1)';
+  to.style.transform   = 'translateX(0)';
+  to.style.opacity     = '1';
+  to.style.pointerEvents = 'all';
+
+  setTimeout(() => {
+    from.classList.remove('is-active');
+    from.style.cssText = '';
+    to.style.transition = '';
+    to.style.transform  = '';
+    to.style.opacity    = '';
+    animating = false;
+  }, 420);
+
+  current = idx;
+  update();
+}
+
+function update() {
+  dots.forEach((d, i) => d.classList.toggle('is-active', i === current));
+  counter.textContent   = `${pad(current)} / ${pad(total - 1)}`;
+  sectionEl.textContent = slides[current].dataset.label;
+  btnPrev.disabled      = current === 0;
+  btnNext.disabled      = current === total - 1;
+}
+
+btnPrev.addEventListener('click', () => goTo(current - 1, -1));
+btnNext.addEventListener('click', () => goTo(current + 1,  1));
+dots.forEach(d => d.addEventListener('click', () => {
+  const i = parseInt(d.dataset.idx);
+  goTo(i, i > current ? 1 : -1);
+}));
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1, 1); }
+  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1, -1); }
+});
+
+update();
+</script>
+</body>
+</html>
