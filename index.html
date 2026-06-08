@@ -128,7 +128,41 @@ html, body {
   color: rgba(255,255,255,0.88); line-height: 1.75; max-width: 860px;
 }
 
-/* ── SLIDE 2: ABOUT ── */
+/* ── SLIDE 2: MISSION ── */
+#s-mission {
+  background: var(--ink);
+  display: flex; align-items: center;
+  padding: 0 var(--px);
+}
+.mission-inner {
+  max-width: 1080px; width: 100%;
+  display: flex; gap: 56px; align-items: flex-start;
+}
+.mission-accent {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 10px; gap: 10px;
+}
+.mission-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--amber);
+}
+.mission-dot:nth-child(1) { opacity: 0.7; }
+.mission-dot:nth-child(2) { opacity: 0.4; }
+.mission-dot:nth-child(3) { opacity: 0.2; }
+.mission-accent-line {
+  width: 1px; flex: 1; min-height: 120px;
+  background: linear-gradient(to bottom, rgba(184,147,90,0.3), transparent);
+  margin-top: 4px;
+}
+.mission-text {
+  font-size: clamp(32px, 3.8vw, 56px); font-weight: 300;
+  line-height: 1.45; letter-spacing: -0.022em;
+  color: rgba(255,255,255,0.92);
+}
+.mission-text strong { font-weight: 500; color: var(--white); }
+
+/* ── SLIDE 3: ABOUT ── */
 #s-about {
   background: var(--ink);
   display: grid; grid-template-columns: 44fr 56fr; overflow: hidden;
@@ -194,36 +228,36 @@ html, body {
 .svc-desc { font-size: 19px; font-weight: 300; color: rgba(255,255,255,0.5); line-height: 1.8; }
 
 /* ── SLIDE 4: FRAMEWORK ── */
-#s-framework { background: var(--ink); display: flex; flex-direction: column; overflow: hidden; }
+#s-framework { background: #C8C5BF; display: flex; flex-direction: column; overflow: hidden; }
 .fw-head {
   flex-shrink: 0;
   padding: 36px var(--px) 28px;
-  border-bottom: 0.5px solid var(--border);
+  border-bottom: 0.5px solid rgba(10,10,10,0.22);
   display: flex; align-items: flex-end; gap: 64px;
 }
 .fw-head-left { flex: 1; }
 .fw-head-eyebrow { margin-bottom: 16px; }
-.fw-title { font-size: clamp(36px, 3.8vw, 54px); font-weight: 300; line-height: 1.08; letter-spacing: -0.025em; }
+.fw-title { font-size: clamp(36px, 3.8vw, 54px); font-weight: 300; line-height: 1.08; letter-spacing: -0.025em; color: var(--ink); }
 .fw-title strong { font-weight: 600; }
-.fw-head-sub { flex: 0 0 420px; font-size: 17px; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.65; padding-bottom: 4px; }
+.fw-head-sub { flex: 0 0 480px; font-size: 22px; font-weight: 300; color: rgba(10,10,10,0.55); line-height: 1.55; padding-bottom: 4px; }
 .fw-cols {
   flex: 1; min-height: 0;
   display: grid; grid-template-columns: repeat(4, 1fr);
 }
 .fw-col {
   padding: 32px 40px;
-  border-right: 0.5px solid var(--border);
+  border-right: 0.5px solid rgba(10,10,10,0.22);
   display: flex; flex-direction: column;
 }
 .fw-col:first-child { padding-left: var(--px); }
 .fw-col:last-child { border-right: none; padding-right: var(--px); }
-.fw-col-icon { margin-bottom: 20px; color: var(--amber); opacity: 0.8; }
-.fw-col-head { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 6px; }
-.fw-col-rule { width: 24px; height: 1px; background: var(--amber); margin: 16px 0; opacity: 0.6; }
+.fw-col-icon { margin-bottom: 20px; color: var(--amber); opacity: 0.9; }
+.fw-col-head { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 6px; color: var(--ink); }
+.fw-col-rule { width: 24px; height: 1px; background: var(--amber); margin: 16px 0; opacity: 0.7; }
 .fw-col-items { display: flex; flex-direction: column; gap: 0; }
 .fw-col-item {
-  font-size: 16px; font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.5;
-  padding: 12px 0; border-bottom: 0.5px solid var(--border);
+  font-size: 17px; font-weight: 400; color: rgba(10,10,10,0.65); line-height: 1.5;
+  padding: 12px 0; border-bottom: 0.5px solid rgba(10,10,10,0.22);
 }
 .fw-col-item:last-child { border-bottom: none; }
 
@@ -347,7 +381,7 @@ html, body {
         <path d="M8 1.5L3.5 6L8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <span class="tb-counter" id="tb-counter">01 / 14</span>
+    <span class="tb-counter" id="tb-counter">01 / 13</span>
     <button class="tb-btn" id="btn-next" aria-label="Next">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
         <path d="M4 1.5L8.5 6L4 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -365,36 +399,19 @@ html, body {
     <div class="cover-body">
       <div class="cover-kicker">M5 Advisors &mdash; Capabilities Overview</div>
       <div class="cover-headline">M5 Advisors<br><strong>The Digital Infrastructure Behind Exceptional Places.</strong></div>
-      <div class="cover-sub">M5 is an owner&rsquo;s rep and technology advisor for large-scale development, translating digital infrastructure decisions into new forms of value, connection, and experience in the built world.</div>
     </div>
   </div>
 
-  <!-- 02: ABOUT -->
-  <div class="slide" id="s-about" data-label="About">
-    <div class="about-left">
-      <div>
-        <div class="eyebrow about-eyebrow">01 &mdash; About</div>
-        <div class="about-display">Built for<br><strong>Owner Value.</strong></div>
+  <!-- 02: MISSION -->
+  <div class="slide" id="s-mission" data-label="Mission">
+    <div class="mission-inner">
+      <div class="mission-accent">
+        <div class="mission-dot"></div>
+        <div class="mission-dot"></div>
+        <div class="mission-dot"></div>
+        <div class="mission-accent-line"></div>
       </div>
-      <div class="principles">
-        <div class="principle">
-          <div class="p-num">01</div>
-          <div class="p-text"><strong>Owner-side, always.</strong> We work exclusively for owners and developers &mdash; never for vendors.</div>
-        </div>
-        <div class="principle">
-          <div class="p-num">02</div>
-          <div class="p-text"><strong>Deeply experienced.</strong> Two decades at the intersection of people, technology, and the built environment.</div>
-        </div>
-        <div class="principle">
-          <div class="p-num">03</div>
-          <div class="p-text"><strong>Fluent across disciplines.</strong> Translating between stakeholders &mdash; from fiber to finance to experience design.</div>
-        </div>
-      </div>
-    </div>
-    <div class="about-right">
-      <div class="about-amber-rule"></div>
-      <div class="about-lead">M5 helps real estate leaders integrate technology to enhance experiences, <em>optimize operations,</em> and unlock lasting asset value.</div>
-      <div class="about-body">We serve as owner&rsquo;s representative and infrastructure advisor for large-scale development &mdash; translating fiber, digital media, and connectivity decisions into durable, revenue-generating programs.</div>
+      <div class="mission-text">M5 is an owner&rsquo;s rep and technology advisor for large-scale development, <strong>translating digital infrastructure decisions into new forms of value, connection, and experience in the built world.</strong></div>
     </div>
   </div>
 
@@ -597,7 +614,8 @@ html, body {
     </div>
   </div>
 
-  <!-- 08: WORK — LAX -->
+  <!--
+  WORK — LAX (hidden)
   <div class="slide work-slide" data-label="Work">
     <div class="wp-img">
       <img src="brand_assets/project_images/lax.jpg" alt="Los Angeles International Airport">
@@ -619,7 +637,7 @@ html, body {
     </div>
   </div>
 
-  <!-- 09: WORK — Obama Presidential Center -->
+  WORK — Obama Presidential Center (hidden)
   <div class="slide work-slide" data-label="Work">
     <div class="wp-img">
       <img src="brand_assets/project_images/obama_presidential_center.jpg" alt="Obama Presidential Center">
@@ -640,6 +658,7 @@ html, body {
       </div>
     </div>
   </div>
+  -->
 
   <!-- 10: WORK — ICD Brookfield Place -->
   <div class="slide work-slide" data-label="Work">
@@ -687,7 +706,31 @@ html, body {
     </div>
   </div>
 
-  <!-- 12: LEADERSHIP -->
+  <!-- 12: WORK — Halo Vista -->
+  <div class="slide work-slide" data-label="Work">
+    <div class="wp-img">
+      <img src="brand_assets/project_images/halo_vista.jpg" alt="Halo Vista">
+    </div>
+    <div class="wp-panel">
+      <div class="wp-header"><div class="eyebrow">04 &mdash; Selected Work</div></div>
+      <div class="wp-mid">
+        <div class="wp-location">Phoenix, AZ</div>
+        <div class="wp-name">Halo Vista</div>
+        <div class="wp-tags">
+          <span class="wp-tag">Digital Master Plan</span>
+          <span class="wp-tag">Infrastructure Strategy</span>
+          <span class="wp-tag">Fiber Ownership</span>
+          <span class="wp-tag">Tenant Positioning</span>
+        </div>
+      </div>
+      <div class="wp-footer">
+        <div class="wp-rule"></div>
+        <div class="wp-desc">Developing the digital vision and infrastructure strategy for a 2,500-acre advanced manufacturing and innovation hub adjacent to TSMC&rsquo;s Phoenix campus &mdash; defining fiber ownership models and connectivity value propositions across tech, retail, and residential.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13: LEADERSHIP -->
   <div class="slide" id="s-leadership" data-label="Leadership">
     <div class="ls-photo">
       <img src="brand_assets/project_images/Charlie_headshot.jpg" alt="Charlie Miller">
@@ -738,7 +781,7 @@ html, body {
   <div class="dot" data-idx="10"></div>
   <div class="dot" data-idx="11"></div>
   <div class="dot" data-idx="12"></div>
-  <div class="dot" data-idx="13"></div>
+  <div class="dot" data-idx="12"></div>
 </div>
 
 <script>
